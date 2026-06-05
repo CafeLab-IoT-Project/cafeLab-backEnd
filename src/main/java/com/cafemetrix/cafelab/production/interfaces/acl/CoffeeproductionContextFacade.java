@@ -38,6 +38,8 @@ public interface CoffeeproductionContextFacade {
 
     List<CoffeeLot> getCoffeeLotsBySupplierId(Long supplierId);
 
+    boolean existsCoffeeLotById(Long coffeeLotId);
+
     Long createRoastProfile(Long userId, String name, String type, Integer duration, 
                                  Double tempStart, Double tempEnd, Long coffeeLotId, Boolean isFavorite);
 
