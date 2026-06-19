@@ -6,5 +6,5 @@ import com.cafemetrix.cafelab.monitoring.domain.model.commands.CreateTelemetryRe
 import java.util.Optional;
 
 public interface TelemetryRecordCommandService {
-    Optional<TelemetryRecord> handle(CreateTelemetryRecordCommand command);
+    Long handle(CreateTelemetryRecordCommand command);
 }

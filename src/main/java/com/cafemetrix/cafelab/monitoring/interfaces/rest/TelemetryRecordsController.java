@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,15 +32,13 @@ public class TelemetryRecordsController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TelemetryRecordResource> recordTelemetry(@RequestBody CreateTelemetryRecordResource resource) {
+    public ResponseEntity<Map<String, Object>> recordTelemetry(@RequestBody CreateTelemetryRecordResource resource) {
         var command = new CreateTelemetryRecordCommand(resource.coffeeLotId(), resource.temperature(), resource.humidity(), resource.timestamp());
-        var record = telemetryCommandService.handle(command);
-
-        if (record.isEmpty()) {
-            throw new IllegalStateException("Fallo en la ingesta del paquete de datos del sensor.");
+        Long recordId = telemetryCommandService.handle(command);
+        if (recordId == null || recordId <= 0) {
+            throw new IllegalStateException("Fallo en la ingesta del paquete de datos.");
         }
-
-        return new ResponseEntity<>(TelemetryRecordResourceFromEntityAssembler.toResourceFromEntity(record.get()), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", recordId, "status", "SUCCESS"));
     }
 
     @GetMapping("/coffee-lot/{coffeeLotId}")
